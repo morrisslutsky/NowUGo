@@ -11,6 +11,7 @@ HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 SectionList * pSlData = NULL;
+HWND g_hComboSection;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -46,7 +47,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // Main message loop:
     while (GetMessage(&msg, nullptr, 0, 0))
     {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+		if (IsDialogMessage(msg.hwnd, &msg)) continue;
+
+		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
@@ -118,7 +121,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    SetWindowText(hWndStatic, L"Choose Section");
 
    HWND hWndComboBox = CreateWindow(WC_COMBOBOX, TEXT(""),
-	   CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
+	   CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE | WS_TABSTOP,
 	   S*2, S*2, cR.right-S*4, cR.bottom-S*3, hWnd, NULL, hInstance,
 	   NULL);
 
@@ -134,6 +137,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    }
    
    SendMessage(hWndComboBox, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
+   g_hComboSection = hWndComboBox;
+  
+
    return TRUE;
 }
 
