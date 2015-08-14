@@ -3,13 +3,14 @@
 
 #include "stdafx.h"
 #include "NowUGo.h"
-
+#include "SectionList.h"
 #define MAX_LOADSTRING 100
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+SectionList * pSlData = NULL;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -113,11 +114,26 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    RECT cR;
    GetClientRect(hWnd, &cR);
 
+   HWND hWndStatic = CreateWindow(WC_STATIC, TEXT(""), SS_CENTER | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, S * 2, S, cR.right - S * 4, S, hWnd, NULL, hInstance, NULL);
+   SetWindowText(hWndStatic, L"Choose Section");
+
    HWND hWndComboBox = CreateWindow(WC_COMBOBOX, TEXT(""),
 	   CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
-	   S*2, S, cR.right-S*4, cR.bottom-S*2, hWnd, NULL, hInstance,
+	   S*2, S*2, cR.right-S*4, cR.bottom-S*3, hWnd, NULL, hInstance,
 	   NULL);
 
+   pSlData = new SectionList();
+   if (pSlData->err()) {
+	   MessageBox(hWnd, pSlData->errStr(), L"Error", MB_OK);
+	   exit(1);
+   }
+
+   int n = pSlData->getNNames();
+   for (int i = 0; i < n; i++) {
+	   SendMessage(hWndComboBox, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)pSlData->getName(i));
+   }
+   
+   SendMessage(hWndComboBox, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
    return TRUE;
 }
 
