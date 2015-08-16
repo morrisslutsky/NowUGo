@@ -40,6 +40,9 @@
     <ClInclude Include="Popup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ClassList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -55,6 +58,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Popup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClassList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

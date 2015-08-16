@@ -1,0 +1,20 @@
+Jimmy Page,2,2
+Frodo Baggins,2,0
+Robert Plant,0,0
+Samwise Gamgee,0,0
+John Paul Jones,0,0
+Meriadoc Brandybuck,0,0
+John Bonham,0,0
+Peregrine Took,0,0
+Aragorn son of Arathorn,0,0
+Gandalf the Gray,0,0
+Gandalf the Grey,0,0
+Elrond,0,0
+Arwen,0,0
+Bill Ferny,0,0
+Saruman 'Sharkey' the White,0,0
+D'nice,0,0
+Jay'Quellin,0,0
+A-A-Ron,0,0
+B'lakee,0,0
+Mr. Garvey,0,0

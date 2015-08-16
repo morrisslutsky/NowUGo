@@ -147,6 +147,7 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClassList.h" />
     <ClInclude Include="NowUGo.h" />
     <ClInclude Include="Popup.h" />
     <ClInclude Include="ReadLine.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ClassList.cpp" />
     <ClCompile Include="NowUGo.cpp" />
     <ClCompile Include="Popup.cpp" />
     <ClCompile Include="ReadLine.cpp" />

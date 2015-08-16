@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "Popup.h"
+#include "ClassList.h"
 #include "Resource.h"
 
 static bool isPopupWndRegistered = false;
+ClassList * pClassList = NULL;
 
 LRESULT CALLBACK PopupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -19,6 +21,9 @@ LRESULT CALLBACK PopupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		EndPaint(hWnd, &ps);
 	}
 	break;
+	//case WM_ERASEBKGND:
+	//	return true;
+	//	break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
@@ -53,6 +58,12 @@ ATOM PopupRegisterClass(HINSTANCE hInstance) {
 DWORD WINAPI PopupThread(LPVOID pData) {
 	PopupData * pD = (PopupData *)pData;
 
+	pClassList = new ClassList(pD->sname);
+
+	if (pClassList->err()) {
+		MessageBox(NULL, pClassList->errStr(), L"Error", MB_OK);
+		goto cleanup;
+	}
 	if (!isPopupWndRegistered) {
 		if (!PopupRegisterClass(pD->instance)) goto cleanup;
 		isPopupWndRegistered = true;
@@ -85,6 +96,7 @@ cleanup:
 	HWND pHwnd = pD->parent;
 	delete pD->sname;
 	delete pD;
+	delete pClassList;
 	SendMessage(pHwnd, WM_USER_HKLISTEN, 0, 0);
 	return 0;
 }
