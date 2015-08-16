@@ -89,3 +89,37 @@ ClassList::~ClassList() {
 	}
 	CloseHandle(outFile);
 }
+
+// Get students who owe a turn at answering a question, randomize their order 
+RecordSet ClassList::getRecordSet() {
+	RecordSet ret; ret.nRecords = 0; ret.pRecords = NULL;
+	if (nRecords == 0) return ret;
+	UINT maxTurns = 0;
+	UINT i;  
+	for (i = 0; i < nRecords; i++) { maxTurns = max(maxTurns, Records[i].turns); }
+	UINT cnt = 0;
+	for (i = 0; i < nRecords; i++) { if (Records[i].turns < maxTurns) cnt++; }
+	// if all kids have played the same number of turns, start again!
+	if (cnt == 0) {
+		cnt = nRecords; maxTurns++;
+	}
+	ret.nRecords = cnt; 
+	ret.pRecords = new StudentRecord * [cnt];
+	UINT j = 0;
+	for (i = 0; i < nRecords; i++) {
+		if (Records[i].turns < maxTurns) {
+			ret.pRecords[j++] = &Records[i];
+		}
+	}
+
+	for (i = 0; i < cnt; i++) {
+		StudentRecord * tmp;
+		UINT j = (UINT)(rand() * (float) cnt / RAND_MAX);
+		UINT k = (UINT)(rand() * (float) cnt / RAND_MAX);
+		tmp = ret.pRecords[j];
+		ret.pRecords[j] = ret.pRecords[k];
+		ret.pRecords[k] = tmp;
+	}
+
+	return ret;
+}

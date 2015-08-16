@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassList.h" />
+    <ClInclude Include="gfx.h" />
     <ClInclude Include="NowUGo.h" />
     <ClInclude Include="Popup.h" />
     <ClInclude Include="ReadLine.h" />

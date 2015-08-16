@@ -9,6 +9,12 @@ struct StudentRecord
 					UINT	credits;
 };
 
+struct RecordSet
+{
+	StudentRecord **	pRecords;
+	UINT				nRecords;
+};
+
 // if my class has more than 512 students I'm complaining to the principal
 class ClassList
 {
@@ -20,6 +26,7 @@ public:
 	static const UINT MAXRECORDS = 512;
 	StudentRecord Records[MAXRECORDS];
 	UINT nRecords;
+	RecordSet getRecordSet();
 private:
 	int errnumber;
 	WCHAR fname[256];

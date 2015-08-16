@@ -1,20 +1,20 @@
 Jimmy Page,2,2
 Frodo Baggins,2,0
-Robert Plant,0,0
-Samwise Gamgee,0,0
-John Paul Jones,0,0
-Meriadoc Brandybuck,0,0
-John Bonham,0,0
-Peregrine Took,0,0
-Aragorn son of Arathorn,0,0
-Gandalf the Gray,0,0
-Gandalf the Grey,0,0
-Elrond,0,0
-Arwen,0,0
-Bill Ferny,0,0
-Saruman 'Sharkey' the White,0,0
-D'nice,0,0
-Jay'Quellin,0,0
-A-A-Ron,0,0
-B'lakee,0,0
-Mr. Garvey,0,0
+Robert Plant,2,2
+Samwise Gamgee,2,2
+John Paul Jones,2,2
+Meriadoc Brandybuck,2,1
+John Bonham,2,2
+Peregrine Took,2,1
+Aragorn son of Arathorn,3,2
+Gandalf the Gray,2,2
+Gandalf the Grey,2,2
+Elrond,2,2
+Arwen,2,1
+Bill Ferny,2,2
+Saruman 'Sharkey' the White,2,2
+D'nice,2,2
+Jay'Quellin,2,2
+A-A-Ron,2,2
+B'lakee,2,2
+Mr. Garvey,3,3
