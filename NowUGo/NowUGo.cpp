@@ -12,6 +12,8 @@ WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 SectionList * pSlData = NULL;
 HWND g_hComboSection;
+char g_hotKey = 'Z';
+RAWINPUTDEVICE rid;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -120,6 +122,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    HWND hWndStatic = CreateWindow(WC_STATIC, TEXT(""), SS_CENTER | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, S * 2, S, cR.right - S * 4, S, hWnd, NULL, hInstance, NULL);
    SetWindowText(hWndStatic, L"Choose Section");
 
+   WCHAR hkTxt[64];
+   wsprintf(hkTxt, L"Hotkey CTRL-ALT-%c", g_hotKey);
+   HWND hWndStatic2 = CreateWindow(WC_STATIC, TEXT(""), SS_CENTER | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, S * 2, cR.bottom - S, cR.right - S * 4, S, hWnd, NULL, hInstance, NULL);
+   SetWindowText(hWndStatic2, hkTxt);
+
    HWND hWndComboBox = CreateWindow(WC_COMBOBOX, TEXT(""),
 	   CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE | WS_TABSTOP,
 	   S*2, S*2, cR.right-S*4, cR.bottom-S*3, hWnd, NULL, hInstance,
@@ -155,25 +162,42 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    switch (message)
+	
+	switch (message)
     {
-    case WM_COMMAND:
-        {
-            int wmId = LOWORD(wParam);
-            // Parse the menu selections:
-            switch (wmId)
-            {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
-        }
-        break;
+	case WM_CREATE:
+		// register interest in raw data here
+		rid.dwFlags = RIDEV_INPUTSINK;
+		rid.usUsagePage = 1;
+		rid.usUsage = 6;
+		rid.hwndTarget = hWnd;
+		RegisterRawInputDevices(&rid, 1, sizeof(rid));
+		return DefWindowProc(hWnd, message, wParam, lParam);
+		
+	case WM_INPUT: {
+			UINT dwSize;
+			if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize, sizeof(RAWINPUTHEADER)) == -1) {
+				break;
+			}
+			LPBYTE lpb = new BYTE[dwSize];
+			if (lpb == NULL) {
+				break;
+			}
+			if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER)) != dwSize) {
+				delete[] lpb;
+				break;
+			}
+			PRAWINPUT raw = (PRAWINPUT)lpb;
+			if (raw->data.keyboard.Message == WM_KEYDOWN) {
+				if (raw->data.keyboard.VKey == g_hotKey) {
+					if (GetAsyncKeyState(VK_MENU) && GetAsyncKeyState(VK_CONTROL)) {
+						MessageBox(hWnd, L"DING DING DING", L"", MB_OK | MB_SYSTEMMODAL);
+					}
+				}
+			}
+			break;
+		}
+
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -191,22 +215,4 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-// Message handler for about box.
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    UNREFERENCED_PARAMETER(lParam);
-    switch (message)
-    {
-    case WM_INITDIALOG:
-        return (INT_PTR)TRUE;
 
-    case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-        {
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
-        }
-        break;
-    }
-    return (INT_PTR)FALSE;
-}
