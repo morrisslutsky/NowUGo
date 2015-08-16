@@ -21,7 +21,7 @@ Krazy D,0,0
 Grace Slick,0,0
 Paul Kantner,0,0
 Mickey Thomas,0,0
-Craig Chaquico,0,0
+Craig Chaquico,1,1
 Beavis,0,0
 Butthead,0,0
 Mr. Buzzcut,0,0

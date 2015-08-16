@@ -5,7 +5,7 @@ Lars Ulrich,0,0
 Mohammad Ali,0,0
 Mike Tyson,1,0
 George Foreman,0,0
-Theophrastus Paracelsus Bombastus Von Hohenheim,0,0
+Theophrastus Paracelsus Bombastus Von Hohenheim,1,1
 Ke$ha,0,0
 Ringo Starr,0,0
 John Lennon,0,0
@@ -15,13 +15,13 @@ Ice Cube,1,0
 MC Ren,0,0
 Dr. Dre,0,0
 DJ Yella,0,0
-Arabian Prince,0,0
+Arabian Prince,1,1
 Easy E,0,0
 Krazy D,0,0
 Grace Slick,0,0
 Paul Kantner,0,0
 Mickey Thomas,0,0
-Craig Chaquico,0,0
+Craig Chaquico,1,1
 Beavis,0,0
 Butthead,0,0
 Mr. Buzzcut,0,0
