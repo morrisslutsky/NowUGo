@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "NowUGo.h"
 #include "SectionList.h"
+#include "Popup.h"
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -14,6 +15,8 @@ SectionList * pSlData = NULL;
 HWND g_hComboSection;
 char g_hotKey = 'Z';
 RAWINPUTDEVICE rid;
+BOOL g_acceptHotKey = true;
+DWORD popupThreadID = 0;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -155,11 +158,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //  PURPOSE:  Processes messages for the main window.
 //
-//  WM_COMMAND  - process the application menu
-//  WM_PAINT    - Paint the main window
-//  WM_DESTROY  - post a quit message and return
-//
-//
+//  WM_CREATE			- Register raw input 
+//  WM_INPUT			- Monitor raw input for hotkey
+//  WM_USER_HKLISTEN	- Reactivate raw input 
+//  WM_DESTROY			- post a quit message and return
+//  WM_PAINT			- dummy handler
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	
@@ -173,8 +177,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		rid.hwndTarget = hWnd;
 		RegisterRawInputDevices(&rid, 1, sizeof(rid));
 		return DefWindowProc(hWnd, message, wParam, lParam);
-		
+
+	case WM_USER_HKLISTEN:
+		g_acceptHotKey = true;
+		break;
+
 	case WM_INPUT: {
+			if (!g_acceptHotKey) break;
 			UINT dwSize;
 			if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize, sizeof(RAWINPUTHEADER)) == -1) {
 				break;
@@ -191,7 +200,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (raw->data.keyboard.Message == WM_KEYDOWN) {
 				if (raw->data.keyboard.VKey == g_hotKey) {
 					if (GetAsyncKeyState(VK_MENU) && GetAsyncKeyState(VK_CONTROL)) {
-						MessageBox(hWnd, L"DING DING DING", L"", MB_OK | MB_SYSTEMMODAL);
+						LPWSTR sName = new wchar_t[1024];
+						GetWindowText(g_hComboSection, sName, 1023);
+						PopupData * pD = new PopupData();
+						pD->parent = hWnd;
+						pD->instance = hInst;
+						pD->sname = sName;
+						CreateThread(NULL, // default security attributes
+							0,			// default stack size
+							PopupThread,// start address (in Popup.cpp)
+							pD,			// pass PopupData
+							0,
+							&popupThreadID
+							);
+
+						g_acceptHotKey = false;
 					}
 				}
 			}

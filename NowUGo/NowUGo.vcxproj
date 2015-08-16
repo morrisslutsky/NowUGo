@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NowUGo.h" />
+    <ClInclude Include="Popup.h" />
     <ClInclude Include="ReadLine.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SectionList.h" />
@@ -156,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NowUGo.cpp" />
+    <ClCompile Include="Popup.cpp" />
     <ClCompile Include="ReadLine.cpp" />
     <ClCompile Include="SectionList.cpp" />
     <ClCompile Include="stdafx.cpp">
