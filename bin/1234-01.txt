@@ -1,28 +1,28 @@
-James Hetfield,1,1
-Kirk Hammett,0,0
-Cliff Burton,0,0
-Lars Ulrich,0,0
-Mohammad Ali,0,0
-Mike Tyson,1,0
-George Foreman,0,0
-Theophrastus Paracelsus Bombastus Von Hohenheim,1,1
-Ke$ha,0,0
-Ringo Starr,0,0
-John Lennon,0,0
-Paul McCartney,0,0
-George Harrison,1,1
-Ice Cube,1,0
-MC Ren,0,0
-Dr. Dre,0,0
-DJ Yella,0,0
-Arabian Prince,1,1
-Easy E,0,0
-Krazy D,0,0
-Grace Slick,0,0
-Paul Kantner,0,0
-Mickey Thomas,0,0
-Craig Chaquico,1,1
-Beavis,0,0
-Butthead,0,0
-Mr. Buzzcut,0,0
-Mr. Van Driessen,0,0
+James Hetfield,3,3
+Kirk Hammett,3,3
+Cliff Burton,3,3
+Lars Ulrich,3,3
+Mohammad Ali,3,2
+Mike Tyson,3,1
+George Foreman,3,3
+Theophrastus Paracelsus Bombastus Von Hohenheim,4,4
+Ke$ha,3,2
+Ringo Starr,3,2
+John Lennon,3,3
+Paul McCartney,3,2
+George Harrison,3,3
+Ice Cube,3,2
+MC Ren,3,3
+Dr. Dre,3,1
+DJ Yella,3,3
+Arabian Prince,3,3
+Easy E,3,3
+Krazy D,3,2
+Grace Slick,3,3
+Paul Kantner,3,2
+Mickey Thomas,3,3
+Craig Chaquico,3,2
+Beavis,3,3
+Butthead,3,3
+Mr. Buzzcut,3,3
+Mr. Van Driessen,3,3

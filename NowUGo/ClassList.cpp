@@ -62,7 +62,7 @@ LPCWSTR ClassList::errStr() {
 
 ClassList::~ClassList() { 
 	// Did we successfully load up the roster?  Otherwise bail.
-	if (errnumber) return;
+  	if (errnumber) return;
 	// Back up existing file for safety
 	WCHAR bfile[256];
 	lstrcpy(bfile, fname);
@@ -76,7 +76,7 @@ ClassList::~ClassList() {
 	}
 	char lineBuffer[StudentRecord::MAXNAME * 2];
 	WCHAR wBuf[StudentRecord::MAXNAME * 2];
-	UINT i, j;
+	UINT i, j; DWORD nBytes;
 	for (i = 0; i < nRecords; i++) {
 		wsprintf(wBuf, L"%s,%d,%d\r\n", Records[i].name, Records[i].turns, Records[i].credits);
 		j = 0;  
@@ -85,7 +85,7 @@ ClassList::~ClassList() {
 			j++;
 		}
 		lineBuffer[j] = 0;
-		WriteFile(outFile, lineBuffer, strlen(lineBuffer), NULL, NULL);
+	 	WriteFile(outFile, lineBuffer, strlen(lineBuffer), &nBytes, NULL);
 	}
 	CloseHandle(outFile);
 }

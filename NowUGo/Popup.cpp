@@ -13,6 +13,8 @@ UINT_PTR		timerID = NULL;
 BOOL			animationDone = false;
 BOOL			showCreditBox = false;
 
+void SetForegroundWindowInternal(HWND hWnd);
+
 LRESULT CALLBACK PopupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
@@ -172,7 +174,10 @@ DWORD WINAPI PopupThread(LPVOID pData) {
 
 	ShowWindow(hWnd, SW_SHOWNORMAL);
 	UpdateWindow(hWnd);
-	SetForegroundWindow(hWnd);
+	//SetForegroundWindow(hWnd);
+
+	SetForegroundWindowInternal(hWnd);
+
 	// Start animation timer
 	timerID = SetTimer(hWnd, timerID, 50, NULL);
 
@@ -196,4 +201,34 @@ cleanup:
 	kidList.nRecords = 0;
 	SendMessage(pHwnd, WM_USER_HKLISTEN, 0, 0);
 	return 0;
+}
+
+// hacka hacka hacka
+void SetForegroundWindowInternal(HWND hWnd) {
+	if (!IsWindow(hWnd)) return;
+
+	//relation time of SetForegroundWindow lock
+	DWORD lockTimeOut = 0;
+	HWND  hCurrWnd = GetForegroundWindow();
+	DWORD dwThisTID = GetCurrentThreadId(),
+	dwCurrTID = GetWindowThreadProcessId(hCurrWnd, 0);
+
+	//we need to bypass some limitations from Microsoft :)
+	if (dwThisTID != dwCurrTID)
+	{
+		AttachThreadInput(dwThisTID, dwCurrTID, TRUE);
+
+		SystemParametersInfo(SPI_GETFOREGROUNDLOCKTIMEOUT, 0, &lockTimeOut, 0);
+		SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, 0, SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
+
+		AllowSetForegroundWindow(ASFW_ANY);
+	}
+
+	SetForegroundWindow(hWnd);
+
+	if (dwThisTID != dwCurrTID)
+	{
+		SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, (PVOID)lockTimeOut, SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
+		AttachThreadInput(dwThisTID, dwCurrTID, FALSE);
+	}
 }
