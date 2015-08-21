@@ -13,7 +13,8 @@ UINT_PTR		timerID = NULL;
 BOOL			animationDone = false;
 BOOL			showCreditBox = false;
 
-void SetForegroundWindowInternal(HWND hWnd);
+BOOL SetForegroundWindowInternal(HWND hWnd);
+BOOL SetForegroundWindowInternal2(HWND hWnd);
 
 LRESULT CALLBACK PopupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -163,10 +164,10 @@ DWORD WINAPI PopupThread(LPVOID pData) {
 	UINT sX = GetSystemMetrics(SM_CXSCREEN);
 	UINT sY = GetSystemMetrics(SM_CYSCREEN);
 
-	HWND hWnd = CreateWindowExW(WS_EX_LEFT, L"NowUGo Banner", L"Banner!", 
+	HWND hWnd = CreateWindowExW(WS_EX_LEFT, L"NowUGo Banner", L"Banner!",
 		WS_POPUP | WS_VISIBLE | WS_SYSMENU,
-		0, (UINT) (sY * GFX::YPos), sX, (UINT) (sY * GFX::YSize)
-		, nullptr , nullptr,
+		0, (UINT)(sY * GFX::YPos), sX, (UINT)(sY * GFX::YSize)
+		, nullptr, nullptr,
 		pD->instance, nullptr);
 
 	if (!hWnd) goto cleanup;
@@ -174,9 +175,13 @@ DWORD WINAPI PopupThread(LPVOID pData) {
 
 	ShowWindow(hWnd, SW_SHOWNORMAL);
 	UpdateWindow(hWnd);
-	//SetForegroundWindow(hWnd);
+	if (!SetForegroundWindow(hWnd))
+		if (!SetForegroundWindowInternal2(hWnd)) {
+			SetForegroundWindowInternal(hWnd);
+		}
 
-	SetForegroundWindowInternal(hWnd);
+
+	
 
 	// Start animation timer
 	timerID = SetTimer(hWnd, timerID, 50, NULL);
@@ -204,8 +209,36 @@ cleanup:
 }
 
 // hacka hacka hacka
-void SetForegroundWindowInternal(HWND hWnd) {
-	if (!IsWindow(hWnd)) return;
+
+BOOL SetForegroundWindowInternal2(HWND hWnd) {
+	BOOL ret = false;
+	if (!::IsWindow(hWnd)) return ret;
+
+	BYTE keyState[256] = { 0 };
+	//to unlock SetForegroundWindow we need to imitate Alt pressing
+	if (GetKeyboardState((LPBYTE)&keyState))
+	{
+		if (!(keyState[VK_MENU] & 0x80))
+		{
+			keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | 0, 0);
+		}
+	}
+
+	ret = SetForegroundWindow(hWnd);
+
+	if (GetKeyboardState((LPBYTE)&keyState))
+		{
+			if (!(keyState[VK_MENU] & 0x80))
+			{
+				keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+			}
+		}
+	return ret;
+}
+
+BOOL SetForegroundWindowInternal(HWND hWnd) {
+	BOOL ret = false;
+	if (!IsWindow(hWnd)) return ret;
 
 	//relation time of SetForegroundWindow lock
 	DWORD lockTimeOut = 0;
@@ -224,11 +257,13 @@ void SetForegroundWindowInternal(HWND hWnd) {
 		AllowSetForegroundWindow(ASFW_ANY);
 	}
 
-	SetForegroundWindow(hWnd);
+	ret = SetForegroundWindow(hWnd);
 
 	if (dwThisTID != dwCurrTID)
 	{
 		SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, (PVOID)lockTimeOut, SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
 		AttachThreadInput(dwThisTID, dwCurrTID, FALSE);
 	}
+
+	return ret;
 }
